@@ -1,91 +1,87 @@
 import React from "react"
 import Link from "gatsby-link"
-import { db } from "../utils/firebase"
-import PostPreview from "../components/PostPreview"
+import firebase from "../utils/firebase"
+import styled from "styled-components"
+import { tablet, desktop } from "../utils/style-variables"
 
+const Container = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+`
+const Media = styled.div`
+  min-width: 0;
+  margin: 5px;
+  margin: 1rem 1rem;
+  width: 100%;
+  height: auto;
+  @media (min-width: ${tablet}px) {
+    width: calc(100% / 4);
+  }
+  @media (min-width: ${desktop}px) {
+    width: calc(100% / 6);
+  }
+`
+const Image = styled.img`
+  max-width: 100%;
+  display: block;
+`
 class IndexPage extends React.Component {
   state = {
-    posts: [],
-    postsByKey: {},
-    orderedPostKeys: [],
-    prevPostKey: null,
-    nextPostKey: null,
+    podcasts: [],
+    podcastsByKey: {},
+    orderedPodcastKeys: [],
     isPlayerActive: false
   }
   componentDidMount() {
-    const posts = db.ref("posts")
+    const podcasts = firebase.database().ref("podcasts")
 
-    posts
-      .orderByChild("week")
-      .startAt(1)
-      .endAt(5)
-      .on("value", snap => {
-        const postsByKey = {}
-        const orderedPostKeys = []
+    podcasts.on("value", snap => {
+      const podcastsByKey = {}
+      const orderedPodcastKeys = []
 
-        snap.forEach(child => {
-          postsByKey[child.key] = child.val()
-          orderedPostKeys.push(child.key)
-        })
-        const result = snap.val()
-        this.setState({
-          posts: [...result].reverse(),
-          orderedPostKeys: orderedPostKeys.reverse(),
-          postsByKey
-        })
+      snap.forEach(child => {
+        podcastsByKey[child.key] = child.val()
+        orderedPodcastKeys.push(child.key)
       })
-  }
-
-  handlePlay = async key => {
-    event.preventDefault()
-    const { postsByKey, orderedPostKeys } = { ...this.state }
-    const currentIndex = orderedPostKeys.indexOf(key)
-    const nextPostKey =
-      currentIndex < orderedPostKeys.length - 1
-        ? orderedPostKeys[currentIndex + 1]
-        : null
-    const prevPostKey =
-      currentIndex > 0 ? orderedPostKeys[currentIndex - 1] : null
-
-    const post = postsByKey[key]
-
-    const storage = firebase.storage()
-    const audioReference = storage.refFromURL(post.audio)
-    const artReference = storage.refFromURL(post.art)
-    const [audio, art] = await Promise.all([
-      audioReference.getDownloadURL(),
-      artReference.getDownloadURL()
-    ])
-    this.setState({
-      audioTitle: `${post.artist} - ${post.song}`,
-      playerTitle: `#${post.week}`,
-      audioUrl: audio,
-      artUrl: art,
-      nextPostKey,
-      prevPostKey
+      const result = snap.val()
+      this.setState({
+        podcasts: [...result].reverse(),
+        orderedPodcastKeys: orderedPodcastKeys.reverse(),
+        podcastsByKey
+      })
     })
-    this.player.play()
   }
 
   render() {
-    const postKeys = this.state.orderedPostKeys
-    const { prevPostKey, nextPostKey } = this.state
-    const prevPostLabel = `#${prevPostKey}`
-    const nextPostLabel = `#${nextPostKey}`
+    const podcastKeys = this.state.orderedPodcastKeys
 
     return (
       <div>
-        {postKeys.map(key => {
-          const post = this.state.postsByKey[key]
-          return (
-            <PostPreview
-              key={key}
-              postKey={key}
-              post={post}
-              handlePlay={this.handlePlay}
-            />
-          )
-        })}
+        <h1>Podcast</h1>
+        <hr />
+        <p>
+          Cada semana Juliana se pone a hablar de música y blah blah lorem ipsum
+          dolorem Cada semana Juliana se pone a hablar de música y blah blah
+          lorem ipsum dolorem Cada semana Juliana se pone a hablar de música y
+          blah blah lorem ipsum dolorem Cada semana Juliana se pone a hablar de
+          música y blah blah lorem ipsum dolorem Cada semana Juliana se pone a
+          hablar de música y blah blah lorem ipsum dolorem{" "}
+        </p>
+        <Container>
+          {podcastKeys.map(key => {
+            const podcast = this.state.podcastsByKey[key]
+            return (
+              <Media>
+                <Image
+                  src={podcast.pictureDownloadURL}
+                  alt={podcast.pictureFileName}
+                />
+                <h3>{podcast.title}</h3>
+              </Media>
+            )
+          })}
+        </Container>
       </div>
     )
   }

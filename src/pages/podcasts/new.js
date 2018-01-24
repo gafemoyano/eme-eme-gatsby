@@ -1,7 +1,7 @@
 import React from "react"
 import Helmet from "react-helmet"
 import styled from "styled-components"
-import { db, storage } from "../../utils/firebase"
+import firebase from "../../utils/firebase"
 
 const FormGroup = styled.div`
   display: flex;
@@ -117,7 +117,7 @@ class NewPodcastPage extends React.Component {
   }
   handleFormSubmit = event => {
     event.preventDefault()
-    const podcastsRef = db.ref("podcasts")
+    const podcastsRef = firebase.database().ref("podcasts")
     const podcast = { ...this.state.podcast }
     podcastsRef.push(podcast)
   }
@@ -126,7 +126,7 @@ class NewPodcastPage extends React.Component {
     event.preventDefault()
     const picture = this.pictureInput.files[0]
     const name = picture.name
-    const ref = storage.ref()
+    const ref = firebase.storage().ref()
 
     let uploadTask = ref.child(`img/${name}`).put(picture)
 
@@ -177,7 +177,7 @@ class NewPodcastPage extends React.Component {
     event.preventDefault()
     const audio = this.audioInput.files[0]
     const name = audio.name
-    const ref = storage.ref()
+    const ref = firebase.storage().ref()
 
     let uploadTask = ref.child(`audio/${name}`).put(audio)
 

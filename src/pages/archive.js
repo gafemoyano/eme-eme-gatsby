@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "gatsby-link"
-import { db } from "../utils/firebase"
+import firebase from "../utils/firebase"
 import PostPreview from "../components/PostPreview"
 
 class ArchivePage extends React.Component {
@@ -13,7 +13,7 @@ class ArchivePage extends React.Component {
     isPlayerActive: false
   }
   componentDidMount() {
-    const posts = db.ref("posts")
+    const posts = firebase.database().ref("posts")
 
     posts
       .orderByChild("week")
@@ -75,6 +75,12 @@ class ArchivePage extends React.Component {
 
     return (
       <div>
+        <h1>Archivo</h1>
+        <p>
+          Inicialmente Eme-Eme comenzó como un blog semanal. Este es el hogar de
+          las 70 entradas que se realizaron.
+        </p>
+        <br />
         {postKeys.map(key => {
           const post = this.state.postsByKey[key]
           return (

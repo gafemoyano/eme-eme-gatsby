@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import Helmet from "react-helmet"
 import styled from "styled-components"
-import { tablet } from "../utils/style-variables"
+import { tablet, desktop } from "../utils/style-variables"
 import "./index.css"
 
 import Header from "../components/Header"
@@ -20,6 +20,9 @@ const Content = styled.div`
   padding: 0 1rem;
   @media (min-width: ${tablet}px) {
     padding: 0;
+  }
+  @media (min-width: ${desktop}px) {
+    max-width: ${desktop}px;
   }
 `
 
@@ -41,7 +44,7 @@ const TemplateWrapper = ({ children }) => (
 )
 
 TemplateWrapper.propTypes = {
-  children: PropTypes.func
+  children: PropTypes.any
 }
 
 export default TemplateWrapper

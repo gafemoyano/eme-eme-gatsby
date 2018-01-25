@@ -1,7 +1,9 @@
 import React from "react"
 import Helmet from "react-helmet"
 import styled from "styled-components"
-import firebase from "../../utils/firebase"
+import firebase from "../../../utils/firebase"
+import slug from "slug"
+import { Redirect } from "react-router"
 
 const FormGroup = styled.div`
   display: flex;
@@ -63,10 +65,12 @@ class NewPodcastPage extends React.Component {
       audioDownloadURL: "",
       pictureFileName: "",
       pictureDownloadURL: "",
+      castBoxPlayerHtml: "",
       tracks: [{ text: "" }]
     },
     pictureUploadMessage: "",
-    audioUploadMessage: ""
+    audioUploadMessage: "",
+    podcastSaved: false
   }
 
   handleAddTrack() {
@@ -117,9 +121,22 @@ class NewPodcastPage extends React.Component {
   }
   handleFormSubmit = event => {
     event.preventDefault()
-    const podcastsRef = firebase.database().ref("podcasts")
     const podcast = { ...this.state.podcast }
-    podcastsRef.push(podcast)
+    const key = slug(podcast.title)
+    if (key) {
+      const podcastRef = firebase
+        .database()
+        .ref(`podcasts/${key}`)
+        .set(podcast, error => {
+          if (error) {
+            console.log("Error saving data")
+          } else {
+            this.setState({ podcastSaved: true })
+          }
+        })
+    } else {
+      console.log("Debe tener un título")
+    }
   }
 
   handleImageUpload = event => {
@@ -235,6 +252,7 @@ class NewPodcastPage extends React.Component {
       pictureDownloadURL,
       audioDownloadURL,
       audioFileName,
+      castBoxPlayerHtml,
       tracks
     } = {
       ...this.state.podcast
@@ -243,6 +261,8 @@ class NewPodcastPage extends React.Component {
       this.state.audioUploadMessage,
       this.state.pictureUploadMessage
     ]
+    const { from } = this.props.location.state || "/"
+    const { podcastSaved } = this.state
     return (
       <div>
         <Helmet>
@@ -265,6 +285,15 @@ class NewPodcastPage extends React.Component {
             <textarea
               value={description}
               name="description"
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <hr />
+          <FormGroup>
+            <Label>Reproductor CastBox</Label>
+            <textarea
+              value={castBoxPlayerHtml}
+              name="castBoxPlayerHtml"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -333,6 +362,7 @@ class NewPodcastPage extends React.Component {
             <Button>Cancelar</Button>
           </FormGroup>
         </form>
+        {podcastSaved && <Redirect to={from || "/"} />}
       </div>
     )
   }

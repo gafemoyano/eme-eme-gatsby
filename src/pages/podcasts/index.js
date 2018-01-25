@@ -1,15 +1,15 @@
 import React from "react"
+import { Switch, Route } from "react-router"
+import ShowPodcast from "./show"
+import NotFound from "../404"
+import Index from "../index"
 
-const IndexPodcastsPage = () => (
-  <table>
-    <tr>hola</tr>
-    <tr>hola</tr>
-    <tr>hola</tr>
-    <tr>hola</tr>
-    <tr>hola</tr>
-    <tr>hola</tr>
-    <tr>hola</tr>
-  </table>
+const index = () => (
+  <Switch>
+    <Route exact path="/podcasts/" component={Index} />
+    <Route exact path="/podcasts/:slug" component={ShowPodcast} />
+    <Route component={NotFound} />
+  </Switch>
 )
 
-export default IndexPodcastsPage
+export default index

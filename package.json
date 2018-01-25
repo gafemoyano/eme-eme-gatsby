@@ -6,13 +6,16 @@
   "dependencies": {
     "components": "^0.1.0",
     "firebase": "^4.8.2",
+    "font-awesome": "^4.7.0",
     "gatsby": "^1.9.158",
     "gatsby-link": "^1.6.34",
+    "gatsby-plugin-create-client-paths": "^1.0.4",
     "gatsby-plugin-react-helmet": "^2.0.3",
     "gatsby-plugin-styled-components": "^2.0.4",
     "gatsby-plugin-typography": "^1.7.10",
     "normalize.css": "^7.0.0",
     "react-helmet": "^5.2.0",
+    "slug": "^0.9.1",
     "styled-components": "^2.4.0",
     "typography-theme-noriega": "^0.15.10"
   },

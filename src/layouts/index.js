@@ -4,8 +4,10 @@ import Helmet from "react-helmet"
 import styled from "styled-components"
 import { tablet, desktop } from "../utils/style-variables"
 import "./index.css"
-
+import favicon from "./favicon.jpg"
 import Header from "../components/Header"
+import Footer from "../components/Footer"
+import "font-awesome/css/font-awesome.css"
 
 const Main = styled.main`
   max-width: 100%;
@@ -34,12 +36,14 @@ const TemplateWrapper = ({ children }) => (
         { name: "description", content: "Música. Mucha Música." },
         { name: "keywords", content: "sample, something" }
       ]}
-    />
+    >
+      <link rel="icon" href={favicon} type="image/jpeg" />
+    </Helmet>
     <Header />
-
     <Main>
       <Content>{children()}</Content>
     </Main>
+    <Footer />
   </div>
 )
 
